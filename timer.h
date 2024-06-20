@@ -22,7 +22,7 @@ public:
 
 private:
     LiquidCrystal_I2C* _lcd;
-    void completeMessage();
+    void completedMessage();
     void paddInt(int integer, String &lcdString);
     void updateProgressBar(unsigned long currentCount, unsigned long totalCount, int lineToPrint);
     void lcdPrint(String text, int x, int y, bool clear);    
