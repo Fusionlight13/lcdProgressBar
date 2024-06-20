@@ -18,17 +18,19 @@ public:
 
     void setMessage(String text);
 
+    void setPause(long time);
+
 private:
     LiquidCrystal_I2C* _lcd;
     void endMessage(long pause);
     void paddInt(int integer, String &lcdString);
     void updateProgressBar(unsigned long currentCount, unsigned long totalCount, int lineToPrint);
-    void lcdPrint(String text, int x, int y, bool clear);
-    
+    void lcdPrint(String text, int x, int y, bool clear);    
     int _minutes = 0;
     bool _isMessage = false;
     String _message = "";
     int _seconds = 0;
+
 
 
 
