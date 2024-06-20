@@ -43,7 +43,7 @@ void timer::setSeconds(int seconds)
 
 void timer::updateProgressBar(unsigned long currentCount, unsigned long totalCount, int lineToPrint)
 {
-    byte zero[] = {
+byte zero[] = {
   B00000,
   B00000,
   B00000,
@@ -53,7 +53,7 @@ void timer::updateProgressBar(unsigned long currentCount, unsigned long totalCou
   B00000,
   B00000
 };
-    byte one[] = {
+byte one[] = {
   B10000,
   B10000,
   B10000,
@@ -63,7 +63,8 @@ void timer::updateProgressBar(unsigned long currentCount, unsigned long totalCou
   B10000,
   B10000
 };
-    byte two[] = {
+
+byte two[] = {
   B11000,
   B11000,
   B11000,
@@ -73,7 +74,8 @@ void timer::updateProgressBar(unsigned long currentCount, unsigned long totalCou
   B11000,
   B11000
 };
-    byte three[] = {
+
+byte three[] = {
   B11100,
   B11100,
   B11100,
@@ -83,7 +85,8 @@ void timer::updateProgressBar(unsigned long currentCount, unsigned long totalCou
   B11100,
   B11100
 };
-    byte four[] = {
+
+byte four[] = {
   B11110,
   B11110,
   B11110,
@@ -93,7 +96,8 @@ void timer::updateProgressBar(unsigned long currentCount, unsigned long totalCou
   B11110,
   B11110
 };
-    byte five[] = {
+
+byte five[] = {
   B11111,
   B11111,
   B11111,
@@ -103,7 +107,6 @@ void timer::updateProgressBar(unsigned long currentCount, unsigned long totalCou
   B11111,
   B11111
 };
-
     double factor = totalCount / 80.0;
     int percent = (currentCount + 1) / factor;
     int number = percent / 5;
@@ -111,7 +114,7 @@ void timer::updateProgressBar(unsigned long currentCount, unsigned long totalCou
 
     if(number > 0)
     {
-        _lcd->setCursor(number - 1, lineToPrint);
+        _lcd->setCursor(number-1, lineToPrint);
         _lcd->write(5);
     }
     _lcd->setCursor(number, lineToPrint);
@@ -137,8 +140,7 @@ void timer::completedMessage()
     _lcd->clear();
 }
 
-bool timer::updateTime()
-{
+bool timer::updateTime() {
     _lcd->setCursor(0, 0);
     String paddedMinute, paddedSecond, paddedPercent;
     String timeString;
@@ -149,24 +151,32 @@ bool timer::updateTime()
 
     unsigned long startMillis = millis();
     unsigned long currentMillis = startMillis;
-    while(currentMillis - startMillis <= totalSeconds * 1000UL) {
-        if(currentMillis - startMillis >= (currentSeconds + 1) * 1000UL) {
+    
+    while (currentSeconds <= totalSeconds) {
+        currentMillis = millis();
+        if (currentMillis - startMillis >= (currentSeconds + 1) * 1000UL) {
             currentSeconds++;
             privateSeconds--;
-            if(privateSeconds < 0) {
+            if (privateSeconds < 0) {
                 privateMinutes--;
                 privateSeconds = 59;
             }
+
+            // Ensure the countdown stops at 0:00 and doesn't go negative
+            if (privateMinutes < 0) {
+                privateMinutes = 0;
+                privateSeconds = 0;
+            }
+
             paddInt(privateMinutes, paddedMinute);
             paddInt(privateSeconds, paddedSecond);
             timeString = paddedMinute + ":" + paddedSecond;
             lcdPrint(timeString, 1, 1);
             updateProgressBar(currentSeconds, totalSeconds, 1);
         }
-        currentMillis = millis();
     }
-    if(_isMessage)
-    {
+
+    if (_isMessage) {
         completedMessage();
     }
     return true;
