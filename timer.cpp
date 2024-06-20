@@ -125,10 +125,16 @@ void timer::setMessage(String text)
     _message = text;
 }
 
-void timer::endMessage(long pause)
+void setDelay(long pause)
+{
+    _pause = pause;
+}
+
+void timer::completeMessage()
 {
     lcdPrint(_message, 1, 1, true);
-    delay(pause);
+    delay(_pause);
+    lcd->clear();
 }
 
 bool timer::updateTime()
@@ -161,7 +167,7 @@ bool timer::updateTime()
     }
     if(_isMessage)
     {
-        endMessage(3000);
+        endMessage();
     }
     return true;
 }
